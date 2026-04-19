@@ -10,7 +10,14 @@ export default function MisTickets() {
   const [tab, setTab] = useState('activos')
   const [tickets, setTickets] = useState([])
 
-  useEffect(() => { if (perfil) cargarTickets() }, [perfil, tab])
+  useEffect(() => {
+    if (!perfil) return
+    cargarTickets()
+    const sub = supabase.channel('mis-tickets-' + perfil.id)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'entradas', filter: `usuario_id=eq.${perfil.id}` }, cargarTickets)
+      .subscribe()
+    return () => supabase.removeChannel(sub)
+  }, [perfil, tab])
 
   async function cargarTickets() {
     const hoy = new Date().toISOString().split('T')[0]

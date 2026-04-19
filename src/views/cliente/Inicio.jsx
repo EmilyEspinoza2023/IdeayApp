@@ -13,7 +13,13 @@ export default function Inicio() {
   const [eventos, setEventos] = useState([])
   const [noLeidos, setNoLeidos] = useState(0)
 
-  useEffect(() => { cargarDatos() }, [])
+  useEffect(() => {
+    cargarDatos()
+    const sub = supabase.channel('inicio-cliente')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'eventos' }, cargarDatos)
+      .subscribe()
+    return () => supabase.removeChannel(sub)
+  }, [])
 
   async function cargarDatos() {
     const hoy = new Date().toISOString().split('T')[0]

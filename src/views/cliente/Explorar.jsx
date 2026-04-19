@@ -13,7 +13,13 @@ export default function Explorar() {
   const [favoritos, setFavoritos] = useState([])
   const filtros = ['Todos', 'Hoy', 'Esta semana', 'Gratis']
 
-  useEffect(() => { cargarDatos() }, [filtro])
+  useEffect(() => {
+    cargarDatos()
+    const sub = supabase.channel('explorar-cliente')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'eventos' }, cargarDatos)
+      .subscribe()
+    return () => supabase.removeChannel(sub)
+  }, [filtro])
 
   async function cargarDatos() {
     const hoy = new Date().toISOString().split('T')[0]

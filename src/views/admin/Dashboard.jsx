@@ -8,7 +8,15 @@ export default function Dashboard() {
   const [stats, setStats] = useState({ eventos: 0, tickets: 0, reservas: 0, ingresos: 0 })
   const [actividad, setActividad] = useState([])
 
-  useEffect(() => { cargarStats() }, [])
+  useEffect(() => {
+    cargarStats()
+    const sub = supabase.channel('dashboard-admin')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'eventos' }, cargarStats)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'entradas' }, cargarStats)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'reservas_mesas' }, cargarStats)
+      .subscribe()
+    return () => supabase.removeChannel(sub)
+  }, [])
 
   async function cargarStats() {
     const hoy = new Date().toISOString().split('T')[0]

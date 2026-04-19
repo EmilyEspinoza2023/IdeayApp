@@ -128,7 +128,7 @@ export default function AdminReservas() {
                         </button>
                       )}
                       <button className="btn btn-sm btn-outline-danger" style={{ borderRadius: 8, fontSize: 12 }} onClick={() => liberar(r.id)}>
-                        Liberar
+                        Cancelar
                       </button>
                     </div>
                   </td>

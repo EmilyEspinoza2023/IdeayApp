@@ -40,6 +40,8 @@ import GestionMesas from './views/admin/GestionMesas'
 import Geofencing from './views/admin/Geofencing'
 import PerfilAdmin from './views/admin/PerfilAdmin'
 import AdminComentarios from './views/admin/AdminComentarios'
+import AdminTickets from './views/admin/AdminTickets'
+import NotificacionesAdmin from './views/admin/NotificacionesAdmin'
 
 export default function App() {
   return (
@@ -85,6 +87,8 @@ export default function App() {
           <Route path="/admin/geofencing" element={<RutaProtegida soloAdmin><Geofencing /></RutaProtegida>} />
           <Route path="/admin/perfil" element={<RutaProtegida soloAdmin><PerfilAdmin /></RutaProtegida>} />
           <Route path="/admin/comentarios" element={<RutaProtegida soloAdmin><AdminComentarios /></RutaProtegida>} />
+          <Route path="/admin/tickets" element={<RutaProtegida soloAdmin><AdminTickets /></RutaProtegida>} />
+          <Route path="/admin/notificaciones" element={<RutaProtegida soloAdmin><NotificacionesAdmin /></RutaProtegida>} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

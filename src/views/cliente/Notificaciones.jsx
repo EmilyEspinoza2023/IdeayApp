@@ -30,6 +30,14 @@ export default function Notificaciones() {
     if (!perfil) return
     cargarNotificaciones()
     cargarMisComentarios()
+
+    const sub = supabase.channel('notificaciones-cliente-' + perfil.id)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'notificaciones', filter: `usuario_id=eq.${perfil.id}` },
+        cargarNotificaciones)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'comentarios' },
+        cargarMisComentarios)
+      .subscribe()
+    return () => supabase.removeChannel(sub)
   }, [perfil])
 
   async function cargarNotificaciones() {
@@ -227,18 +235,32 @@ export default function Notificaciones() {
                   {respuestasDe.length > 0 && (
                     <div className="mt-2 ps-3 d-flex flex-column gap-2" style={{ borderLeft: '2px solid #e9ecef' }}>
                       {respuestasDe.map(r => (
-                        <div key={r.id} className="d-flex gap-2 align-items-start">
-                          {r.perfiles?.foto_url
-                            ? <img src={r.perfiles.foto_url} alt={r.perfiles.nombre} style={{ width: 22, height: 22, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
-                            : <div style={{ width: 22, height: 22, background: 'var(--rojo)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 9, fontWeight: 700, flexShrink: 0 }}>
-                                {r.perfiles?.nombre?.[0]?.toUpperCase()}
-                              </div>
-                          }
-                          <div>
-                            <span className="fw-semibold" style={{ fontSize: 12 }}>{r.perfiles?.nombre} </span>
-                            <span className="text-muted" style={{ fontSize: 12 }}>{r.contenido}</span>
-                            <small className="text-muted d-block" style={{ fontSize: 10 }}>{formatRelativo(r.creado_en)}</small>
+                        <div key={r.id}>
+                          <div className="d-flex gap-2 align-items-start">
+                            {r.perfiles?.foto_url
+                              ? <img src={r.perfiles.foto_url} alt={r.perfiles.nombre} style={{ width: 22, height: 22, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
+                              : <div style={{ width: 22, height: 22, background: 'var(--rojo)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 9, fontWeight: 700, flexShrink: 0 }}>
+                                  {r.perfiles?.nombre?.[0]?.toUpperCase()}
+                                </div>
+                            }
+                            <div>
+                              <span className="fw-semibold" style={{ fontSize: 12 }}>{r.perfiles?.nombre} </span>
+                              <span className="text-muted" style={{ fontSize: 12 }}>{r.contenido}</span>
+                              <small className="text-muted d-block" style={{ fontSize: 10 }}>{formatRelativo(r.creado_en)}</small>
+                            </div>
                           </div>
+                          {r.respuesta_admin && (
+                            <div className="mt-1 ms-4 p-2 rounded-3 d-flex gap-2" style={{ backgroundColor: 'var(--rojo-claro)' }}>
+                              {fotoAdmin
+                                ? <img src={fotoAdmin} alt="La Quinta" style={{ width: 18, height: 18, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
+                                : <div style={{ width: 18, height: 18, background: 'var(--rojo)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: 7, flexShrink: 0 }}>LQ</div>
+                              }
+                              <div>
+                                <p className="mb-0 fw-semibold" style={{ fontSize: 10, color: 'var(--rojo)' }}>La Quinta respondió</p>
+                                <p className="mb-0" style={{ fontSize: 11 }}>{r.respuesta_admin}</p>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>

@@ -9,7 +9,13 @@ export default function AdminEventos() {
   const [eventos, setEventos] = useState([])
   const tabs = ['Todos', 'Activos', 'Borradores']
 
-  useEffect(() => { cargarEventos() }, [tab])
+  useEffect(() => {
+    cargarEventos()
+    const sub = supabase.channel('admin-eventos')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'eventos' }, cargarEventos)
+      .subscribe()
+    return () => supabase.removeChannel(sub)
+  }, [tab])
 
   async function cargarEventos() {
     let query = supabase.from('eventos').select('*, categorias(nombre), precios_evento(precio, cantidad_disponible)').order('fecha', { ascending: false })

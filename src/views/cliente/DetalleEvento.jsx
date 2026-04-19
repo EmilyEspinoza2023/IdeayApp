@@ -379,7 +379,21 @@ export default function DetalleEvento() {
                                   <button type="button" className="btn btn-sm btn-light" style={{ borderRadius: 20, fontSize: 11 }} onClick={() => setEditandoId(null)}>✕</button>
                                 </form>
                               ) : (
-                                <p className="mb-0 text-muted" style={{ fontSize: 12 }}>{r.contenido}</p>
+                                <>
+                                  <p className="mb-0 text-muted" style={{ fontSize: 12 }}>{r.contenido}</p>
+                                  {r.respuesta_admin && (
+                                    <div className="mt-1 p-2 rounded-3 d-flex gap-2" style={{ backgroundColor: 'var(--rojo-claro)' }}>
+                                      {fotoAdmin
+                                        ? <img src={fotoAdmin} alt="La Quinta" style={{ width: 18, height: 18, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
+                                        : <div style={{ width: 18, height: 18, background: 'var(--rojo)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: 7, flexShrink: 0 }}>LQ</div>
+                                      }
+                                      <div>
+                                        <p className="mb-0 fw-semibold" style={{ fontSize: 10, color: 'var(--rojo)' }}>La Quinta</p>
+                                        <p className="mb-0" style={{ fontSize: 11 }}>{r.respuesta_admin}</p>
+                                      </div>
+                                    </div>
+                                  )}
+                                </>
                               )}
                             </div>
                           </div>
