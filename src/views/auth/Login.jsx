@@ -6,7 +6,7 @@ import logo from '../../assets/logo.png'
 
 export default function Login() {
   const navigate = useNavigate()
-  const { usuario, perfil, cargando: authCargando } = useAuth()
+  const { usuario, perfil, cargando: authCargando, entrarComoInvitado } = useAuth()
   const [correo, setCorreo] = useState('')
   const [contrasena, setContrasena] = useState('')
   const [verPass, setVerPass] = useState(false)
@@ -79,6 +79,16 @@ export default function Login() {
         <p className="text-center text-muted small mt-4">
           ¿No tenés cuenta? <Link to="/registro" className="link-rojo">Registrate</Link>
         </p>
+
+        <div className="text-center mt-2">
+          <button
+            type="button"
+            className="btn btn-link text-muted small p-0"
+            onClick={() => { entrarComoInvitado(); navigate('/inicio', { replace: true }) }}
+          >
+            Continuar como invitado
+          </button>
+        </div>
       </div>
     </div>
   )

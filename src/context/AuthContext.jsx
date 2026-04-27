@@ -7,6 +7,7 @@ export function AuthProvider({ children }) {
   const [usuario, setUsuario] = useState(null)
   const [perfil, setPerfil] = useState(null)
   const [cargando, setCargando] = useState(true)
+  const [esInvitado, setEsInvitado] = useState(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -32,11 +33,17 @@ export function AuthProvider({ children }) {
   }
 
   async function cerrarSesion() {
+    setEsInvitado(false)
     await supabase.auth.signOut()
   }
 
+  function entrarComoInvitado() {
+    setEsInvitado(true)
+    setCargando(false)
+  }
+
   return (
-    <AuthContext.Provider value={{ usuario, perfil, cargando, cerrarSesion, cargarPerfil }}>
+    <AuthContext.Provider value={{ usuario, perfil, cargando, cerrarSesion, cargarPerfil, esInvitado, entrarComoInvitado }}>
       {children}
     </AuthContext.Provider>
   )

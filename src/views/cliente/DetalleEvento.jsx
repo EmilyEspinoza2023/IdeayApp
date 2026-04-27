@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
+import ModalInvitado from '../../components/comunes/ModalInvitado'
 
 export default function DetalleEvento() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { perfil } = useAuth()
+  const { perfil, esInvitado } = useAuth()
   const [evento, setEvento] = useState(null)
+  const [modalInvitado, setModalInvitado] = useState(false)
   const [esFavorito, setEsFavorito] = useState(false)
   const [comentarios, setComentarios] = useState([])
   const [rating, setRating] = useState(0)
@@ -59,7 +61,7 @@ export default function DetalleEvento() {
   }
 
   async function toggleFavorito() {
-    if (!perfil) return navigate('/login')
+    if (esInvitado || !perfil) return setModalInvitado(true)
     if (esFavorito) {
       await supabase.from('favoritos').delete().eq('usuario_id', perfil.id).eq('evento_id', id)
     } else {
@@ -245,6 +247,15 @@ export default function DetalleEvento() {
               </div>
             )}
           </div>
+
+          {/* Prompt para invitados */}
+          {esInvitado && (
+            <button className="card-ideay p-3 mb-3 w-100 border-0 text-start" style={{ background: 'var(--rojo-claro)' }} onClick={() => setModalInvitado(true)}>
+              <p className="fw-semibold mb-0" style={{ fontSize: 13, color: 'var(--rojo)' }}>
+                <i className="bi bi-pencil me-2"></i>Registrate para dejar tu opinión
+              </p>
+            </button>
+          )}
 
           {/* Formulario de comentario propio */}
           {perfil && (
@@ -435,17 +446,21 @@ export default function DetalleEvento() {
 
       {/* Botones fijos */}
       <div style={{ position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: 430, padding: 16, backgroundColor: '#fff', borderTop: '1px solid #f0f0f0', display: 'flex', gap: 12 }}>
-        <button onClick={() => navigate(`/evento/${id}/entradas`)}
+        <button
+          onClick={() => esInvitado ? setModalInvitado(true) : navigate(`/evento/${id}/entradas`)}
           className="flex-1 py-3 fw-semibold text-white rounded-3 border-0"
           style={{ backgroundColor: 'var(--rojo)', fontSize: 14 }}>
           Comprar Entrada
         </button>
-        <button onClick={() => navigate(`/evento/${id}/reservar`)}
+        <button
+          onClick={() => esInvitado ? setModalInvitado(true) : navigate(`/evento/${id}/reservar`)}
           className="flex-1 py-3 fw-semibold rounded-3"
           style={{ border: '2px solid var(--rojo)', color: 'var(--rojo)', backgroundColor: 'transparent', fontSize: 14 }}>
           Reservar Mesa
         </button>
       </div>
+
+      <ModalInvitado visible={modalInvitado} onCerrar={() => setModalInvitado(false)} />
     </div>
   )
 }

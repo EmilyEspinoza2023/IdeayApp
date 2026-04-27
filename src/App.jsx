@@ -56,9 +56,9 @@ export default function App() {
           <Route path="/recuperar" element={<RecuperarContrasena />} />
 
           {/* Cliente */}
-          <Route path="/inicio" element={<RutaProtegida><Inicio /></RutaProtegida>} />
-          <Route path="/explorar" element={<RutaProtegida><Explorar /></RutaProtegida>} />
-          <Route path="/evento/:id" element={<RutaProtegida><DetalleEvento /></RutaProtegida>} />
+          <Route path="/inicio" element={<RutaProtegida permitirInvitado><Inicio /></RutaProtegida>} />
+          <Route path="/explorar" element={<RutaProtegida permitirInvitado><Explorar /></RutaProtegida>} />
+          <Route path="/evento/:id" element={<RutaProtegida permitirInvitado><DetalleEvento /></RutaProtegida>} />
           <Route path="/evento/:id/entradas" element={<RutaProtegida><SeleccionarEntradas /></RutaProtegida>} />
           <Route path="/evento/:id/pago" element={<RutaProtegida><PagoSeguro /></RutaProtegida>} />
           <Route path="/evento/:id/compra-exitosa" element={<RutaProtegida><CompraExitosa /></RutaProtegida>} />

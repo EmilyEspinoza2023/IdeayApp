@@ -3,12 +3,17 @@ import { useAuth } from '../../context/AuthContext'
 import { useGeofencing } from '../../hooks/useGeofencing'
 import logo from '../../assets/logo.png'
 
-export default function NavCliente() {
-  const { cerrarSesion } = useAuth()
+function GeofencingActivador() {
   useGeofencing()
+  return null
+}
+
+export default function NavCliente() {
+  const { cerrarSesion, esInvitado } = useAuth()
 
   return (
     <>
+      {!esInvitado && <GeofencingActivador />}
       {/* ── NAV SUPERIOR — solo desktop ── */}
       <nav className="nav-top-cliente">
         <NavLink to="/inicio" style={{ marginRight: 4 }}>
